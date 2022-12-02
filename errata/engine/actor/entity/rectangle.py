@@ -24,10 +24,3 @@ class Rectangle():
     if self.verbose:
       print("inserting action " + a.name + " into " + self.name)
     return
-  
-  # changes the location of a rect object
-  def move(self, location):
-    if self.verbose:
-      print("moving " + self.name + " from " + self.location + " to " + location)
-    self.location = location
-    return

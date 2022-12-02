@@ -41,9 +41,17 @@ def make_draw_text_action():
   import errata.engine.actor.action.draw_text as dl
   return dl.DrawTextAction()
 
+def make_move_rectangle_action():
+  import errata.engine.actor.action.move_rectangle as mr
+  return mr.MoveRectangleAction()
+
 def make_guess_letter_action( word ):
   import errata.engine.actor.action.guess_letter as dl
   return dl.GuessLetterAction( word )
+
+def make_get_key_action():
+  import errata.engine.actor.action.get_key as gk 
+  return gk.GetKeyAction()
 
 def make_put_position_action():
   import errata.engine.actor.action.put_position as pp 
@@ -52,3 +60,7 @@ def make_put_position_action():
 def make_is_inside_action():
   import errata.engine.actor.action.is_inside as i 
   return i.IsInside()
+
+def make_player_controller_action( key_list, speed ):
+  import errata.engine.actor.action.player_control as pc 
+  return pc.PlayerControlAction( key_list, speed )
