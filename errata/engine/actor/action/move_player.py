@@ -1,13 +1,15 @@
-# action for moving basic rectangle
+# action for moving the player 
 
 import pygame
 from pygame.locals import *
 
-class MoveRectangleAction():
-  def __init__(self):
-    self.types = ["event"]
+class MovePlayerAction():
+  def __init__(self, speed=2):
+    self.types = ["display"]
     self.entity_state = None
-    self.name = "move_rectangle_action"
+    self.direction = [0, 0]
+    self.speed = speed
+    self.name = "move_player_action"
     self.verbose = False
     return 
   
@@ -19,17 +21,23 @@ class MoveRectangleAction():
       return False
     if data == None:
       return False
-    if type(data) == tuple:
-      if len(data) == 2:
-        return True
-    return False 
+    return True 
   
   # what the rect will do when drawn
   def act(self, data):
     if self.condition_to_act( data ):
       
-      # move the rectangle
-      self.move( data )
+      # if a new direction is received, update it
+      if type(data) == list:
+        if len(data) == 2:
+          self.direction = data
+      
+      # make new location
+      location = ( self.entity_state.dimensions[0] + self.speed * self.direction[0], 
+                   self.entity_state.dimensions[1] + self.speed * self.direction[1] )
+      
+      # move the player
+      self.move( location )
       
       if self.verbose:
         print(f"{self.name} for {self.entity_state.name}") 

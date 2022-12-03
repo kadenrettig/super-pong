@@ -15,3 +15,6 @@ class RectangleCollider():
     a.entity_state = self 
     self.actions.append( a )
     return
+  
+  def move(self, info):
+    return
