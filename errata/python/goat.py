@@ -41,8 +41,7 @@ def get_circles(nx, ny, nb):
   circles = []
   radius = 10
   for i in range( 0, nb ):
-    circle_bounds = ( random.randint(0, nx), 
-                      random.randint(0, ny) )
+    circle_bounds = ( SCREEN_WIDTH/2, SCREEN_HEIGHT/2 )
     circle_color  = ( random.randint(0, 255), 
                       random.randint(0, 255), 
                       random.randint(0, 255))
@@ -61,44 +60,59 @@ circs = get_circles( SCREEN_WIDTH, SCREEN_HEIGHT, 1 )
 ################################## PLAYERS #####################################
 ##### player 1 #####
 # player 1 paddle
-player_one_paddle = act.make_rectangle( ((30, SCREEN_HEIGHT/2, 20, 200), 
-                                         (50, 100, 83), 
-                                         "paddle") )
+player_one_paddle = act.make_rectangle( ( (30, SCREEN_HEIGHT/2, 20, 200), 
+                                          (50, 100, 83), 
+                                          "player_one_paddle_rect") )
 player_one_paddle.insert_action( act.make_draw_rectangle_action() )
 move_player_one_paddle = act.make_move_player_action( 0.5 )
 player_one_paddle.insert_action( move_player_one_paddle )
-move_player_one_paddle.children.append(player_one_paddle)
+move_player_one_paddle.children.append( player_one_paddle )
 
 # player 1 controller
-key_list=(K_UP, K_DOWN, None, None) 
-player_controller_one = act.make_player_controller_action( key_list )
-player_one_paddle.insert_action( player_controller_one )
-player_controller_one.children.append( move_player_one_paddle )
-
-# add to display
-display.insert_entity( player_one_paddle )
-game_content.append( player_one_paddle )
-
-
+player_one_key_list = ( K_w, K_s, None, None )
+player_one_controller = act.make_player_controller_action( player_one_key_list )
+player_one_paddle.insert_action( player_one_controller )
+player_one_controller.children.append( move_player_one_paddle )
 
 ##### player 2 #####
 # player 2 paddle
+player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-50, SCREEN_HEIGHT/2, 20, 200),
+                                          (50, 100, 83), 
+                                          "player_two_paddle_rect") )
+player_two_paddle.insert_action( act.make_draw_rectangle_action() )
+move_player_two_paddle = act.make_move_player_action( 0.5 )
+player_two_paddle.insert_action( move_player_two_paddle )
+move_player_two_paddle.children.append( player_two_paddle )
+
+# player 2 controller
+player_two_key_list = ( K_UP, K_DOWN, None, None ) 
+player_two_controller = act.make_player_controller_action( player_two_key_list )
+player_two_paddle.insert_action( player_two_controller )
+player_two_controller.children.append( move_player_two_paddle )
+
+##### prepare to instantiate #####
+display.insert_entity( player_one_paddle )
+display.insert_entity( player_two_paddle )
+game_content.append( player_one_paddle )
+game_content.append( player_two_paddle )
 
 
 #################################### PHYSICS ###################################
 # generate physics & particles for each circle
 def get_particles(init_data):
+  # initialize particle entity
   particles = [] 
   parts = phys.make_particles()
   particles.append( parts )
   
+  # create particles for each given circle
   for d in init_data:
     position = list( d.location )
     velocity = [ (2.0 * random.random() - 2.0), (2.0 * random.random() - 1.0) ]
     mass = 1.0
     parts.add_particle( position, velocity, mass )
   
-  ### solvers ###
+  ##### solvers #####
   # position solve 
   psolve = phys.make_position_solve_action() 
   parts.insert_action( psolve )
@@ -126,6 +140,7 @@ def get_particles(init_data):
     
     esolve.children.append( pick )
     
+  ##### collisions with paddles in play area #####
   # collisions with the window frame
   window_collider = phys.make_rectangle_collider( [0,0], 
                                                   [SCREEN_WIDTH, SCREEN_HEIGHT] )
@@ -133,13 +148,16 @@ def get_particles(init_data):
   window_collider.insert_action( collisions )
   psolve.children.append( collisions )
   
-  ### collisions with paddles in play area ###
   # player paddle 1
   box_colliders.append( ( ([30, SCREEN_HEIGHT/2], [50, 560]),   # llc, urc
-                          (200,150,150),            # color
-                          True ) )                    # active
+                          (200,150,150),                        # color
+                          True ) )                              # initial active state
   
-  # move_colliders = act.make_move_player_action( 0.5 )
+  # player paddle 2 
+  box_colliders.append( ( ([SCREEN_WIDTH-50, SCREEN_HEIGHT/2], [SCREEN_WIDTH-30, 560]),
+                          (200, 150, 150), 
+                          True ) )
+  
 
   # create box colliders
   for b in box_colliders:
@@ -148,7 +166,10 @@ def get_particles(init_data):
     box_collider.insert_action( outside_collisions )
     psolve.children.append( outside_collisions )
     box_collider.active = b[2]
-    move_player_one_paddle.children.append(box_collider)
+    if box_colliders.index( b ) == 0:
+      move_player_one_paddle.children.append( box_collider )
+    elif box_colliders.index( b ) == 1:
+      move_player_two_paddle.children.append( box_collider )
   
   return particles
 

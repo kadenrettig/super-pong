@@ -25,16 +25,19 @@ class Rectangle():
       print("inserting action " + a.name + " into " + self.name)
     return
 
-    # changes the location of a rect object
+  # changes the location of a rect object using a given speed and direction
+  # utilized by the move_player action
   def move(self, direction, speed):
     if self.verbose:
       print(f"moving {self.name} from {(self.dimensions[0], self.dimensions[1])} to {location}")
 
+    # calculate the new position to be moved to
     location = ( self.dimensions[0] + speed * direction[0], 
-                   self.dimensions[1] + speed * direction[1] )
+                 self.dimensions[1] + speed * direction[1] )
     
-    self.dimensions =     (location[0],                      # x
-                           location[1],                      # y
-                           self.dimensions[2],               # width
-                           self.dimensions[3])               # height
+    # assign the new location to the rect's variables
+    self.dimensions = ( location[0],                      # x
+                        location[1],                      # y
+                        self.dimensions[2],               # width
+                        self.dimensions[3] )              # height
     return

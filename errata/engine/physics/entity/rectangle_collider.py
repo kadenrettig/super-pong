@@ -16,11 +16,16 @@ class RectangleCollider():
     self.actions.append( a )
     return
   
+  # changes the location of a rect collider object using a given speed and direction
+  # utilized by the move_player action
   def move(self, direction, speed):
+    
+    # calculate the new location
     location = (( self.llc[0] + speed * direction[0], 
                    self.llc[1] + speed * direction[1] ), ( self.urc[0] + speed * direction[0], 
                    self.urc[1] + speed * direction[1] ) )
 
+    # assign the new location to the rect collider's variables
     self.llc = [location[0][0], location[0][1]]
     self.urc = [location[1][0], location[1][1]]
     return

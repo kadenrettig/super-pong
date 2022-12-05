@@ -33,33 +33,11 @@ class MovePlayerAction():
       if type(data) == list:
         if len(data) == 2:
           self.direction = data
-      
-      # make new location
-      # location = ( self.entity_state.dimensions[0] + self.speed * self.direction[0], 
-      #              self.entity_state.dimensions[1] + self.speed * self.direction[1] )
-      
-      # move the player
-      # self.move( location )
 
-      # self.entity_state.move(self.direction, self.speed) --> this is working for the rectangle
-      # print(len(self.children))
+      # pass the direction & speed to the entities associated with the player
       for c in self.children:
-
-      #   print("made it")
         c.move(self.direction, self.speed)
-
 
       if self.verbose:
         print(f"{self.name} for {self.entity_state.name}") 
     return 
-  
-  # changes the location of a rect object
-  # def move(self, location):
-  #   if self.verbose:
-  #     print(f"moving {self.name} from {(self.entity_state.dimensions[0], self.entity_state.dimensions[1])} to {location}")
-    
-  #   self.entity_state.dimensions = (location[0],                      # x
-  #                                   location[1],                      # y
-  #                                   self.entity_state.dimensions[2],  # width
-  #                                   self.entity_state.dimensions[3])  # height
-  #   return
