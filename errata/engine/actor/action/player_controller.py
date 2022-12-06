@@ -15,6 +15,7 @@ class PlayerController():
     self.children = []
     self.verbose = False 
     self.active = True
+    self.direction = [0,0]
     return 
   
   def condition_to_act(self, event):
@@ -29,26 +30,30 @@ class PlayerController():
   
   def act(self, event):
     if self.condition_to_act( event ):
-
-      # grab the key and determine direction
-      direction = [0, 0]
       
       if event.type == pygame.KEYDOWN:
         if self.up_key != None and event.key == self.up_key:
-          direction = [0, -1]
+          self.direction[1] += -1
         elif self.down_key != None and event.key == self.down_key:
-          direction = [0, 1]
+          self.direction[1] += 1
         elif self.left_key != None and event.key == self.left_key:
-          direction = [-1, 0]
+          self.direction[0] += -1
         elif self.right_key != None and event.key == self.right_key:
-          direction = [1, 0]
+          self.direction[0] += 1
           
       if event.type == pygame.KEYUP:
-        direction = [0, 0]
+        if self.up_key != None and event.key == self.up_key:
+          self.direction[1] += 1
+        if self.down_key != None and event.key == self.down_key:
+          self.direction[1] += -1
+        if self.left_key != None and event.key == self.left_key:
+          self.direction = [0, 0]
+        if self.right_key != None and event.key == self.right_key:
+          self.direction = [0, 0]
     
       # pass new location to children
       for c in self.children:
-        c.act( direction )
+        c.act( self.direction )
       
       # debugging
       if self.verbose:
