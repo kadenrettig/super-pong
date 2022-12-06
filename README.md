@@ -1,16 +1,15 @@
-# GOBLIN
-Vault for 2D Game Engine Construction Game Jam project, centered around the theme of "contemplation".
+<img src = 'https://camo.githubusercontent.com/9f76d9dea5633048c2cebd1294ef65b573851d82c77691a4369320e154c1cc19/68747470733a2f2f692e696d6775722e636f6d2f5142595064376a2e706e67' alt='Goblin'/>
 
-![goblin](https://t3.ftcdn.net/jpg/04/60/82/64/360_F_460826408_H2MmQqqWqA8AGskCnFH26He6TmJKXHYn.jpg)
-
-# Overview
+# Goblin
 The goal of this project is to simulate a "Game Engine Jam", in which teams of up to 3 create & present a game engine built around a given theme, complete with a game to show off the functionality & flexibility of the engine. The theme for this given engine is "contemplation", and requires implementing a level system & difficulty layering. 
 
-# Tech Stack
-![python_logo](https://images.vexels.com/media/users/3/166477/isolated/lists/9bb722f0e85ddbc1ce0f064534fd2311-python-programming-language-icon.png) Python </br>
-![pygame_logo](https://avatars.githubusercontent.com/u/13351642?s=280&v=4) Pygame </br> 
+### Tech Stack
+<p>
+  <img src = 'https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg' alt='Python' width='50'/> 
+  <img src = 'https://avatars.githubusercontent.com/u/13351642?s=280&v=4' alt='Pygame' width='50'/>
+<p/>
 
-# Credits
+### Contributors
 Adam Copeland </br>
 Stephen Sams </br>
 Kaden Rettig
