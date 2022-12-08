@@ -14,6 +14,65 @@ import errata.engine.play as pl
 import errata.engine.ui as ui
 import errata.python as py
 
+# Score Specific to this Game
+
+class GenerateMessage():
+  def __init__(self):
+    self.total = 0
+    self.successes = 0
+    self.types = ["display"]
+    self.entity_state = None
+    self.name = "generate_message_action"
+    self.children = []
+    self.active = False
+    self.verbose = False 
+    return
+  
+  def condition_to_act(self, data):
+    if self.entity_state == None:
+      return False 
+    if self.entity_state.active == False:
+      return False
+    if data == None:
+      return False
+    return True
+  
+  def act(self, data):
+    if self.condition_to_act(data):
+      
+      # get new counter values 
+      self.update_total()
+      self.update_successes()
+      
+      # update the counter displays
+      self.update_counters()
+      
+      # wait to be moved again
+      self.active = False
+    return
+  
+  def update_counters(self):
+    for c in self.entity_state.children:
+      if c.name == "hud_total":
+        c.text = f"{self.total}"
+      if c.name == "hud_success":
+        c.text = f"{self.successes}"
+    return
+  
+  # update the total counter
+  def update_total(self):
+    for c in self.children:
+      if c.name == "total_counter":
+        self.total = c.counter
+    return
+  
+  # update the success counter
+  def update_successes(self):
+    for c in self.children:
+      if c.name == "success_counter":
+          self.successes = c.counter
+    return
+
 ################################## CONTAINERS ##################################
 game_content = []
 viewer_actions = []
@@ -142,41 +201,60 @@ net_part_6.insert_action(act.make_draw_rectangle_action())
 display.insert_entity( net_part_6 )
 game_content.append( net_part_6 )
 
+### Goals ###
+player_1_goal = act.make_rectangle(((0,0, 30, SCREEN_HEIGHT),(255,255,255), "player_1_goal"))
+player_1_scorer = act.make_index_is_inside_action(0)
+player_1_goal.insert_action( player_1_scorer )
+
+player_1_goal.insert_action(act.make_draw_rectangle_action()) 
+display.insert_entity( player_1_goal )
+game_content.append( player_1_goal )
+
+player_2_goal = act.make_rectangle(((SCREEN_WIDTH-30,0, 30, SCREEN_HEIGHT),(255,255,255), "player_2_goal"))
+player_2_scorer = act.make_index_is_inside_action(0)
+player_2_goal.insert_action( player_2_scorer )
+
+player_2_goal.insert_action(act.make_draw_rectangle_action()) 
+display.insert_entity( player_2_goal )
+game_content.append( player_2_goal )
+
 ### Points ###
 # player 1 counter
-player_1_counter = util.make_total_counter()
+player_1_counter = util.make_success_counter()
 player_1_increment = util.make_increment_action( 1 )
+player_1_scorer.children.append( player_1_increment )
 player_1_counter.insert_action( player_1_increment )
 
 # player 2 counter 
-player_2_counter = util.make_success_counter()
+player_2_counter = util.make_total_counter()
 player_2_increment = util.make_increment_action( 1 )
+player_2_scorer.children.append( player_2_increment )
 player_2_counter.insert_action( player_2_increment )
 
 ###################################### HUD #####################################
 
 # hud message generation action
-generate_message = py.make_generate_message()
+generate_message = GenerateMessage()
 
 # hud creation
 hud = ui.make_hud()
 
 # hud counter for player 1 score appearances
 # font size, location, color, text
-hud_player_2 = act.make_text( (50, 
+hud_player_1 = act.make_text( (50, 
                            (270, 15), 
                            (255, 255, 255), 
                            "0", 
-                           "player_1") )
-hud_player_2.insert_action( act.make_draw_text_action() )
-hud.children.append( hud_player_2 )
+                           "hud_success") )
+hud_player_1.insert_action( act.make_draw_text_action() )
+hud.children.append( hud_player_1 )
 
 # hud counter for player 2's score
 hud_player_2 = act.make_text( (50, 
                              (960, 15), 
                              (255, 255, 255), 
                              "0", 
-                             "player_2"))
+                             "hud_total"))
 hud_player_2.insert_action( act.make_draw_text_action() )
 hud.children.append( hud_player_2 )
 
@@ -223,6 +301,10 @@ def get_particles(init_data):
   # velocity solve
   vsolve = phys.make_velocity_solve_action() 
   parts.insert_action( vsolve ) 
+
+  # Add goal checking actions to vsolve
+  vsolve.children.append( player_1_scorer )
+  vsolve.children.append( player_2_scorer )
 
   # euler solve
   esolve = phys.make_euler_solve_action() 
@@ -278,31 +360,6 @@ def get_particles(init_data):
 
 # create every particle for simulation
 particles = get_particles( circs )
- 
- 
-##################################### BOXES ####################################
-# # create all rectangles that represent each rectangular collider
-# def get_boxes(init_data):
-#   boxes = []
-#   for b in init_data:
-#     rect_loc = ( b[0][0] )
-#     rect_dim = ( abs(b[0][0][0] - b[0][1][0]), abs(b[0][0][1] - b[0][1][1]) )
-#     rect_col = ( b[1] )
-#     rect = act.make_rectangle(  ((rect_loc[0], rect_loc[1], 
-#                                   rect_dim[0], rect_dim[1]), 
-#                                   rect_col) )
-#     rect.insert_action( act.make_draw_rectangle_action() )
-#     rect.active = b[2]
-
-#     boxes.append( rect )
-#   return boxes
-
-# # create rectangles for each collider
-# boxes = get_boxes( box_colliders )
-
-
-
-
 
 ################################ APPEND CONTENT ################################
 # add actions to viewer

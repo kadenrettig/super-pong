@@ -57,6 +57,10 @@ def make_is_inside_action():
   import errata.engine.actor.action.is_inside as i 
   return i.IsInside()
 
+def make_index_is_inside_action(index):
+  import errata.engine.actor.action.index_is_inside as i 
+  return i.IndexIsInside(index)
+
 def make_player_controller_action( key_list ):
   import errata.engine.actor.action.player_controller as pc
   return pc.PlayerController( key_list )
