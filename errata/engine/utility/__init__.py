@@ -4,6 +4,10 @@ def make_timer():
   import errata.engine.utility.entity.timer as tm 
   return tm.Timer()
 
+def make_counter(name):
+  import errata.engine.utility.entity.counter as c
+  return c.Counter(name)
+
 def make_total_counter():
   import errata.engine.utility.entity.total_counter as tc 
   return tc.TotalCounter()

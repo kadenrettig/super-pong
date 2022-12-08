@@ -50,6 +50,10 @@ def make_pick_position_action( index ):
   import errata.engine.physics.action.pick_position as pp 
   return pp.PickPositionAction( index )
 
+def make_reset_particle_action( index, spawn ):
+  import errata.engine.physics.action.reset_particle as rp 
+  return rp.ResetParticle( index, spawn )
+
 def make_inside_rectangle_collision():
   import errata.engine.physics.action.inside_rectangle_collision as irc 
   return irc.InsideRectangleCollisionAction()
