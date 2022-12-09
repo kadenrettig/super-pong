@@ -13,6 +13,10 @@ def make_game_looper( content = None ):
       looper.insert_entity(c)
   return looper
 
+def make_level(gameloop, display, content, name):
+  import errata.engine.play.entity.level as lvl
+  return lvl.Level(gameloop, display, content, name)
+
 ##### ACTIONS #####
 
 # action to close the viewer
@@ -29,3 +33,11 @@ def make_display_screen_action():
 def make_screen_resize_action():
   import errata.engine.play.action.screen_resize as sr 
   return sr.ScreenResize()
+
+def make_load_level_action():
+  import errata.engine.play.action.load_level as load
+  return load.LoadLevel()
+
+def make_close_level_action():
+  import errata.engine.play.action.close_level as close
+  return close.CloseLevel()

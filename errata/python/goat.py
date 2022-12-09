@@ -59,11 +59,12 @@ class GenerateMessage():
     return
 
 ################################## CONTAINERS ##################################
-game_content = []
-viewer_actions = []
+game_content = [] # Persistent Game Content
+viewer_actions = [] # Persistent Viewer Actions
+
+level_content = [] # Level specific content
 hud_actions = []
 box_colliders = []
-boxes = []
 particles = []
 
 
@@ -136,10 +137,8 @@ player_two_paddle.insert_action( player_two_controller )
 player_two_controller.children.append( move_player_two_paddle )
 
 ##### prepare to instantiate #####
-display.insert_entity( player_one_paddle )
-display.insert_entity( player_two_paddle )
-game_content.append( player_one_paddle )
-game_content.append( player_two_paddle )
+level_content.append( player_one_paddle )
+level_content.append( player_two_paddle )
 
 ################################## POINTS AND GAMEPLAY THINGS ##################
 
@@ -148,43 +147,37 @@ net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 0, 10, 110),
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_1.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_1 )
-game_content.append( net_part_1 )
+level_content.append( net_part_1 )
 
 net_part_2 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 120, 10, 110), 
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_2.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_2 )
-game_content.append( net_part_2 )
+level_content.append( net_part_2 )
 
 net_part_3 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 240, 10, 110), 
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_3.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_3 )
-game_content.append( net_part_3 )
+level_content.append( net_part_3 )
 
 net_part_4 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 360, 10, 110), 
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_4.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_4 )
-game_content.append( net_part_4 )
+level_content.append( net_part_4 )
 
 net_part_5 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 480, 10, 110), 
                                  (50, 100, 83),
                                  "net_part_5_rectangle"))
 net_part_5.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_5 )
-game_content.append( net_part_5 )
+level_content.append( net_part_5 )
 
 net_part_6 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 600, 10, 120), 
                                  (50, 100, 83),
                                  "net_part_6_rectangle"))
 net_part_6.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( net_part_6 )
-game_content.append( net_part_6 )
+level_content.append( net_part_6 )
 
 # Particle Reset
 particle_reset = phys.make_reset_particle_action(0, [SCREEN_WIDTH/2, SCREEN_HEIGHT/2])
@@ -197,8 +190,7 @@ player_1_scorer.children.append( particle_reset )
 
 
 player_1_goal.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( player_1_goal )
-game_content.append( player_1_goal )
+level_content.append( player_1_goal )
 
 player_2_goal = act.make_rectangle(((SCREEN_WIDTH-30,0, 30, SCREEN_HEIGHT),(255,255,255), "player_2_goal"))
 player_2_scorer = act.make_index_is_inside_action(0)
@@ -206,8 +198,7 @@ player_2_goal.insert_action( player_2_scorer )
 player_2_scorer.children.append( particle_reset )
 
 player_2_goal.insert_action(act.make_draw_rectangle_action()) 
-display.insert_entity( player_2_goal )
-game_content.append( player_2_goal )
+level_content.append( player_2_goal )
 
 ### Points ###
 # player 1 counter
@@ -264,8 +255,7 @@ for action in hud_actions:
   hud.insert_action( action )
 
 # add complete hud to game content
-display.insert_entity( hud )
-game_content.append( hud )
+level_content.append( hud )
 
                                             
 
@@ -363,15 +353,38 @@ for action in viewer_actions:
   
 # append all game content
 print( f"Loading game content..." )
-game_content = game_content + circs + particles + boxes
-
-# append all display items
-print( f"Loading items into display..." )
-for e in circs + boxes:
-  display.insert_entity( e )
+level_content = level_content + circs + particles
 
 
 ################################# GAME LOOPER ##################################
 # make the game loop & loop
 looper = pl.make_game_looper( game_content )
+
+# Start button
+start_button = ui.make_button( ((305, 110, 200, 200), (0,255,0), "start_button"))
+start_button.insert_action(ui.make_draw_rect_button_action())
+start_press = ui.make_button_press_action()
+start_button.insert_action(start_press)
+looper.insert_entity(start_button)
+display.insert_entity(start_button)
+
+# End button
+end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
+end_button.insert_action(ui.make_draw_rect_button_action())
+end_press = ui.make_button_press_action()
+end_button.insert_action(end_press)
+looper.insert_entity(end_button)
+display.insert_entity(end_button)
+
+# Levels
+test_level = pl.make_level(looper, display, level_content, "test_level")
+loader = pl.make_load_level_action()
+test_level.insert_action(loader)
+start_press.children.append(loader)
+
+closer = pl.make_close_level_action()
+test_level.insert_action(closer)
+end_press.children.append(closer)
+
+
 looper.loop()
