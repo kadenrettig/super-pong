@@ -25,6 +25,9 @@ class Level():
             self.display.insert_entity(e)
 
     def close_level(self):
-        print("To Do")
+        for le in self.level_content:
+            for a in le.actions:
+                self.game_loop.remove_action(a)
+                self.display.remove_action(a)
                 
         

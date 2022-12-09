@@ -204,14 +204,18 @@ level_content.append( player_2_goal )
 # player 1 counter
 player_1_counter = util.make_counter("player_1_counter")
 player_1_increment = util.make_increment_action( 1 )
+player_1_reset = util.make_reset_action(0)
 player_2_scorer.children.append( player_1_increment )
 player_1_counter.insert_action( player_1_increment )
+player_1_counter.insert_action( player_1_reset)
 
 # player 2 counter 
 player_2_counter = util.make_counter("player_2_counter")
 player_2_increment = util.make_increment_action( 1 )
+player_2_reset = util.make_reset_action(0)
 player_1_scorer.children.append( player_2_increment )
 player_2_counter.insert_action( player_2_increment )
+player_2_counter.insert_action( player_2_reset )
 
 ###################################### HUD #####################################
 
@@ -385,6 +389,9 @@ start_press.children.append(loader)
 closer = pl.make_close_level_action()
 test_level.insert_action(closer)
 end_press.children.append(closer)
+end_press.children.append(particle_reset)
+end_press.children.append(player_1_reset)
+end_press.children.append(player_2_reset)
 
 
 looper.loop()

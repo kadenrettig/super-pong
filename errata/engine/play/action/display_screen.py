@@ -25,6 +25,10 @@ class DisplayScreen():
   def insert_action(self, a):
     if "display" in a.types:
       self.children.append(a)
+
+  def remove_action(self, a):
+    if "display" in a.types:
+      self.children.remove(a)
   
   def condition_to_act(self, data):
     if self.entity_state == None:

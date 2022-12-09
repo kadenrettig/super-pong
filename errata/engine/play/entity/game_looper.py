@@ -44,6 +44,24 @@ class GameLooper():
       if self.verbose:
         print( "\t" + self.name + " added " + a.name + " display action" )
     return
+
+  def remove_action(self, a):
+    # add event content
+    if "event" in a.types:
+      self.event_content.remove( a )
+      if self.verbose:
+        print( "\t" + self.name + " removed " + a.name + " event action" )
+    # add loop content
+    if "loop" in a.types:
+      self.loop_content.remove(  a)
+      if self.verbose:
+        print( "\t" + self.name + "removed " + a .name + " loop action" )
+    # add display content
+    if "display" in a.types:
+      self.display_content.remove( a )
+      if self.verbose:
+        print( "\t" + self.name + " removed " + a.name + " display action" )
+    return
   
   # primary game loop
   def loop(self):
