@@ -140,8 +140,8 @@ player_two_controller.children.append( move_player_two_paddle )
 level_content.append( player_one_paddle )
 level_content.append( player_two_paddle )
 
-################################## POINTS AND GAMEPLAY THINGS ##################
 
+########################## POINTS AND GAMEPLAY THINGS ##########################
 ###### game net ######
 net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 0, 10, 110), 
                                  (50, 100, 83),
@@ -204,21 +204,21 @@ level_content.append( player_2_goal )
 # player 1 counter
 player_1_counter = util.make_counter("player_1_counter")
 player_1_increment = util.make_increment_action( 1 )
-player_1_reset = util.make_reset_action(0)
+player_1_reset = util.make_reset_action( 0 )
 player_2_scorer.children.append( player_1_increment )
 player_1_counter.insert_action( player_1_increment )
-player_1_counter.insert_action( player_1_reset)
+player_1_counter.insert_action( player_1_reset )
 
 # player 2 counter 
 player_2_counter = util.make_counter("player_2_counter")
 player_2_increment = util.make_increment_action( 1 )
-player_2_reset = util.make_reset_action(0)
+player_2_reset = util.make_reset_action( 0 )
 player_1_scorer.children.append( player_2_increment )
 player_2_counter.insert_action( player_2_increment )
 player_2_counter.insert_action( player_2_reset )
 
-###################################### HUD #####################################
 
+###################################### HUD #####################################
 # hud message generation action
 generate_message = GenerateMessage()
 
@@ -228,19 +228,19 @@ hud = ui.make_hud()
 # hud counter for player 1 score appearances
 # font size, location, color, text
 hud_player_1 = act.make_text( (50, 
-                           (270, 15), 
-                           (255, 255, 255), 
-                           "0", 
-                           "player_1_hud") )
+                              (270, 15), 
+                              (255, 255, 255), 
+                              "0", 
+                              "player_1_hud") )
 hud_player_1.insert_action( act.make_draw_text_action() )
 hud.children.append( hud_player_1 )
 
 # hud counter for player 2's score
 hud_player_2 = act.make_text( (50, 
-                             (960, 15), 
-                             (255, 255, 255), 
-                             "0", 
-                             "player_2_hud"))
+                              (960, 15), 
+                              (255, 255, 255), 
+                              "0", 
+                              "player_2_hud"))
 hud_player_2.insert_action( act.make_draw_text_action() )
 hud.children.append( hud_player_2 )
 
@@ -262,7 +262,6 @@ for action in hud_actions:
 level_content.append( hud )
 
                                             
-
 #################################### PHYSICS ###################################
 # generate physics & particles for each circle
 def get_particles(init_data):
@@ -348,6 +347,7 @@ particles = get_particles( circs )
 
 # Add reset to particles
 particles[0].insert_action( particle_reset )
+
 
 ################################ APPEND CONTENT ################################
 # add actions to viewer
