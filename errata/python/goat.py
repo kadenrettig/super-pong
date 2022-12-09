@@ -15,7 +15,6 @@ import errata.engine.ui as ui
 import errata.python as py
 
 # Score Specific to this Game
-
 class GenerateMessage():
   def __init__(self):
     self.player_1_score = 0
@@ -38,7 +37,7 @@ class GenerateMessage():
     return True
   
   def act(self, data):
-    if self.condition_to_act(data):
+    if self.condition_to_act( data ):
       
       # get new counter values 
       for c in self.children:
@@ -57,6 +56,49 @@ class GenerateMessage():
       # wait to be moved again
       self.active = False
     return
+  
+# action to add a new obstacle to the level with each iteration
+class AddObstacles():
+  def __init__(self):
+    self.types = ["display"]
+    self.obstacles = []
+    self.entity_state = None 
+    self.name = "add_obstacles_action"
+    self.children = []
+    self.active = True 
+    self.verbose = False 
+    return 
+  
+  def condition_to_act(self, data):
+    if data == None:
+      return False
+    return True
+  
+  def act(self, data):
+    if self.condition_to_act( data ):
+      
+      for i in range(0, data):
+        # create new obstacle
+        obs_dimensions = (random.randint(10, 25), random.randint(10, 25))
+        obs_location = (random.randint(0, SCREEN_WIDTH-obs_dimensions[0]), random.randint(51, SCREEN_HEIGHT-obs_dimensions[1])) 
+        obs_color = (random.randint(15, 255), random.randint(15, 255), random.randint(15, 255))
+        obs_info = ( (obs_location + obs_dimensions), obs_color, "obs_rect" ) 
+        obs_rect = act.make_rectangle( obs_info )
+        obs_rect.insert_action( act.make_draw_rectangle_action() )
+        
+        # create collider for the obstacle
+        obs_collider = phys.make_rectangle_collider( (obs_location[0], obs_location[1]), 
+                                                     (obs_location[0] + obs_dimensions[0], obs_location[1] + obs_dimensions[1]) )
+        obs_collision = phys.make_outside_rectangle_collision()
+        obs_collider.insert_action( obs_collision )
+        
+        # append new rect + collider to list
+        print("hello")
+        self.obstacles.append( (obs_rect, obs_collider) )
+      
+    print(self.obstacles)
+    return self.obstacles
+
 
 ################################## CONTAINERS ##################################
 game_content = [] # Persistent Game Content
@@ -187,7 +229,6 @@ player_1_goal = act.make_rectangle(((0,0, 30, SCREEN_HEIGHT),(255,255,255), "pla
 player_1_scorer = act.make_index_is_inside_action(0)
 player_1_goal.insert_action( player_1_scorer )
 player_1_scorer.children.append( particle_reset )
-
 
 player_1_goal.insert_action(act.make_draw_rectangle_action()) 
 level_content.append( player_1_goal )
@@ -345,6 +386,18 @@ def get_particles(init_data):
       move_player_one_paddle.children.append( box_collider )
     elif box_colliders.index( b ) == 1:
       move_player_two_paddle.children.append( box_collider )
+      
+  # create obstacles
+  add_obstacles_action = AddObstacles()
+  obstacles = add_obstacles_action.act( 4 )
+  for obstacle in obstacles:
+    psolve.children.append( obstacle[1].actions[0] )
+    level_content.append( obstacle[0] )
+    level_content.append( obstacle[1] )
+    
+  print(obstacles)
+  for i in psolve.children:
+    print(i.name)
   
   return particles
 
