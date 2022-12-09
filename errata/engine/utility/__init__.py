@@ -30,6 +30,10 @@ def make_increment_action( value ):
   import errata.engine.utility.action.increment as ic
   return ic.Increment( value )
 
+def make_count_trigger_action( value ):
+  import errata.engine.utility.action.count_trigger as ct
+  return ct.CountTrigger( value )
+
 def make_reset_action( value ):
   import errata.engine.utility.action.reset_count as rc
   return rc.ResetCount( value )

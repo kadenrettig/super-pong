@@ -205,17 +205,22 @@ level_content.append( player_2_goal )
 player_1_counter = util.make_counter("player_1_counter")
 player_1_increment = util.make_increment_action( 1 )
 player_1_reset = util.make_reset_action(0)
+player_1_trigger = util.make_count_trigger_action(3)
 player_2_scorer.children.append( player_1_increment )
+player_2_scorer.children.append( player_1_trigger )
 player_1_counter.insert_action( player_1_increment )
 player_1_counter.insert_action( player_1_reset)
+player_1_counter.insert_action( player_1_trigger)
 
 # player 2 counter 
 player_2_counter = util.make_counter("player_2_counter")
 player_2_increment = util.make_increment_action( 1 )
 player_2_reset = util.make_reset_action(0)
+player_2_trigger = util.make_count_trigger_action(3)
 player_1_scorer.children.append( player_2_increment )
 player_2_counter.insert_action( player_2_increment )
 player_2_counter.insert_action( player_2_reset )
+player_2_counter.insert_action( player_2_trigger)
 
 ###################################### HUD #####################################
 
@@ -368,15 +373,34 @@ looper = pl.make_game_looper( game_content )
 start_button = ui.make_button( ((305, 110, 200, 200), (0,255,0), "start_button"))
 start_button.insert_action(ui.make_draw_rect_button_action())
 start_press = ui.make_button_press_action()
+start_deactivate = util.make_deactivate_action()
+start_activate = util.make_activate_action()
 start_button.insert_action(start_press)
+
+start_button.insert_action(start_deactivate)
+start_button.insert_action(start_activate)
+
+start_press.children.append(start_deactivate)
+
 looper.insert_entity(start_button)
 display.insert_entity(start_button)
 
 # End button
 end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
 end_button.insert_action(ui.make_draw_rect_button_action())
+end_button.active = False
+end_deactivate = util.make_deactivate_action()
+end_activate = util.make_activate_action()
 end_press = ui.make_button_press_action()
 end_button.insert_action(end_press)
+
+end_button.insert_action(end_activate)
+end_button.insert_action(end_deactivate)
+
+start_press.children.append(end_activate)
+end_press.children.append(start_activate)
+end_press.children.append(end_deactivate)
+
 looper.insert_entity(end_button)
 display.insert_entity(end_button)
 
@@ -388,6 +412,8 @@ start_press.children.append(loader)
 
 closer = pl.make_close_level_action()
 test_level.insert_action(closer)
+
+
 end_press.children.append(closer)
 end_press.children.append(particle_reset)
 end_press.children.append(player_1_reset)

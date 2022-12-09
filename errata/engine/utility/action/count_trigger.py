@@ -1,13 +1,13 @@
 # ADAM COPELAND, CPSC 4160, FALL 2022
-# action to reset an entity's counter 
+# Action causes children to act when score reached the given value
 
-class ResetCount():
+class CountTrigger():
   def __init__(self, value):
     self.value = value
     self.types = []
     self.entity_state = None 
     self.name = "reset_count_action"
-    self.verbose = False
+    self.verbose = True
     self.children = []
     return 
   
@@ -16,14 +16,17 @@ class ResetCount():
       return False
     if self.entity_state.active == False:
       return False 
-    return True
+    if self.entity_state.counter == self.value:
+      return True
+    return False
   
   def act(self, data):
     if self.condition_to_act(data):
-      # increment entity counter
-      self.entity_state.counter = self.value
+      # Run child actions
+      for c in self.children:
+          c.act( data )
       
       # debugging
       if self.verbose:
-        print( f"counter for {self.entity_state.name} reset to {self.entity_state.count}." )
+        print( f"counter for {self.entity_state.name} reached {self.value}." )
       return
