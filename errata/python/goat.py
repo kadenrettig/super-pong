@@ -190,7 +190,7 @@ level_content.append( player_two_paddle )
 
 ########################## POINTS AND GAMEPLAY THINGS ##########################
 ###### game net ######
-net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 0, 10, 110), 
+net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 60, 10, 50), 
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_1.insert_action(act.make_draw_rectangle_action()) 
