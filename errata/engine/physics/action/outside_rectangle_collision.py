@@ -53,7 +53,7 @@ class OutsideRectangleCollisionAction():
                 data.velocity[i][0] = -data.velocity[i][0]
               elif top_time == minimum_time:
                 data.position[i][1] = 2.0 * self.entity_state.llc[1] - data.position[i][1] 
-                data.velocity[i][1] = -data.velocity[i][0]
+                data.velocity[i][1] = -data.velocity[i][1]
               else:
                 data.position[i][1] = 2.0 * self.entity_state.urc[1] - data.position[i][1] 
                 data.velocity[i][1] = -data.velocity[i][1]
