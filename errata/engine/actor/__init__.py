@@ -41,9 +41,9 @@ def make_draw_text_action():
   import errata.engine.actor.action.draw_text as dl
   return dl.DrawTextAction()
 
-def make_move_player_action( speed ):
+def make_move_player_action( speed, max_width, max_height ):
   import errata.engine.actor.action.move_player as mp
-  return mp.MovePlayerAction( speed )
+  return mp.MovePlayerAction( speed, max_width, max_height )
 
 def make_guess_letter_action( word ):
   import errata.engine.actor.action.guess_letter as dl

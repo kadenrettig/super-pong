@@ -1,3 +1,4 @@
+# KADEN RETTIG, CPSC 4160, FALL 2022
 # action for moving the player 
 
 import pygame
@@ -5,11 +6,13 @@ from pygame.locals import *
 import errata.engine.physics as phys
 
 class MovePlayerAction():
-  def __init__(self, speed=2):
+  def __init__(self, speed=2, max_width=1280, max_height=720):
     self.types = ["display"]
     self.entity_state = None
     self.direction = [0, 0]
     self.speed = speed
+    self.max_width = max_width
+    self.max_height = max_height
     self.name = "move_player_action"
     self.children = []
     self.verbose = False
@@ -36,7 +39,7 @@ class MovePlayerAction():
 
       # pass the direction & speed to the entities associated with the player
       for c in self.children:
-        c.move(self.direction, self.speed)
+        c.move(self.direction, self.speed, self.max_width, self.max_height)
 
       if self.verbose:
         print(f"{self.name} for {self.entity_state.name}") 

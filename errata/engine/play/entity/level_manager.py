@@ -20,8 +20,7 @@ class LevelManager():
   
     def load_level(self):
         if (self.counter < len(self.levels)):
-            print("LOADING")
-            print("level"+str(self.counter))
+            print(f"LOADING level {self.counter}")
             
             for e in self.levels[self.counter]:
                 self.game_loop.insert_entity(e)
@@ -41,7 +40,7 @@ class LevelManager():
         # Update to the next level
         if (self.counter < len(self.levels)):
             self.counter += 1
-            print("Counter up to...")
+            print(f"Counter up to {self.counter}")
         else:
             print("Out of levels!")
         

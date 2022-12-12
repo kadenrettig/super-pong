@@ -12,7 +12,10 @@ class CloseLevel():
   
   def act(self, data):
     print("closing level...")
+    
+    # close the level
     self.entity_state.close_level()
+    
     # Run children
     for a in self.children:
       a.act(None)

@@ -19,8 +19,11 @@ class LoadLevel():
   
   def act(self, event):
     if self.condition_to_act:
-      print("loading level... ?")
+      
+      # load the level
       self.entity_state.load_level()
+      
+      # call children
       for a in self.children:
         a.act(None)
     return

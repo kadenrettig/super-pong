@@ -1,3 +1,6 @@
+# ADAM COPELAND, STEPHEN SAMS, KADEN RETTIG
+# CPSC 4160, FALL 2022
+
 import sys
 sys.path.insert( 0, "./" )
 import os
@@ -86,16 +89,20 @@ class AddObstacles():
         # create new obstacle
         # obs_dimensions = (random.randint(25,50), random.randint(25, 50))
         obs_dimensions = (45, 45)
-        obs_location = (random.randint(50, SCREEN_WIDTH - obs_dimensions[0] - 50), random.randint(51, SCREEN_HEIGHT - obs_dimensions[1])) 
-        obs_color = (random.randint(15, 255), random.randint(15, 255), random.randint(15, 255))
-        obs_info = ( (obs_location + obs_dimensions), obs_color, "obs_rect" ) 
+        obs_location = (random.randint(50, SCREEN_WIDTH - obs_dimensions[0] - 50), 
+                        random.randint(51, SCREEN_HEIGHT - obs_dimensions[1])) 
+        obs_color = (random.randint(15, 255), random.randint(15, 255), 
+                     random.randint(15, 255))
+        obs_info = ( (obs_location + obs_dimensions), obs_color, 
+                     "obs_rect" ) 
         obs_rect = act.make_rectangle( obs_info )
         obs_drawer = act.make_draw_rectangle_action()
         obs_rect.insert_action( obs_drawer )
         
         # create collider for the obstacle
         obs_collider = phys.make_rectangle_collider( (obs_location[0], obs_location[1]), 
-                                                     (obs_location[0] + obs_dimensions[0], obs_location[1] + obs_dimensions[1]) )
+                                                     (obs_location[0] + obs_dimensions[0], 
+                                                      obs_location[1] + obs_dimensions[1]) )
         obs_collision = phys.make_outside_rectangle_collision()
         obs_collider.insert_action( obs_collision )
 
@@ -135,6 +142,30 @@ viewer_actions.append( pl.make_screen_resize_action() )
 game_content.append( viewer )
 
 
+#################################### SOUND #####################################
+# path for sound assets
+sound_path = str( os.path.abspath(sound.__file__) )
+sound_path = sound_path[:len(sound_path)-11]
+
+# initialize mixer
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.mixer.init()
+
+# background music
+hyron_bgm = sfx.make_track( sound_path, "hyron.mp3" )
+hyron_bgm.insert_action( sfx.make_bgm_action( -1 ) )
+pygame.mixer.music.set_volume( 0.3 )
+game_content.append( hyron_bgm )
+
+# retro scoring sound 
+score_sound = sfx.make_sound_action( sound_path + 
+                                     "mixkit-retro-game-notification-212.wav" )
+
+# retro level end sound
+end_sound = sfx.make_sound_action( sound_path + 
+                                   "mixkit-arcade-retro-game-over-213.wav" )
+
+
 #################################### CIRCLES ###################################
 # create a list of circles to be used as particles
 def get_circles(nx, ny, nb):
@@ -164,7 +195,7 @@ player_one_paddle = act.make_rectangle( ( (30, SCREEN_HEIGHT/2, 20, 200),
                                           (50, 100, 83), 
                                           "player_one_paddle_rect") )
 player_one_paddle.insert_action( act.make_draw_rectangle_action() )
-move_player_one_paddle = act.make_move_player_action( 2.5 )
+move_player_one_paddle = act.make_move_player_action( 2.5, SCREEN_WIDTH, SCREEN_HEIGHT )
 player_one_paddle.insert_action( move_player_one_paddle )
 move_player_one_paddle.children.append( player_one_paddle )
 
@@ -180,7 +211,7 @@ player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-50, SCREEN_HEIGHT/2, 20,
                                           (50, 100, 83), 
                                           "player_two_paddle_rect") )
 player_two_paddle.insert_action( act.make_draw_rectangle_action() )
-move_player_two_paddle = act.make_move_player_action( 2.5 )
+move_player_two_paddle = act.make_move_player_action( 2.5, SCREEN_WIDTH, SCREEN_HEIGHT )
 player_two_paddle.insert_action( move_player_two_paddle )
 move_player_two_paddle.children.append( player_two_paddle )
 
@@ -240,6 +271,7 @@ player_1_goal = act.make_rectangle(((0,0, 30, SCREEN_HEIGHT),(255,255,255), "pla
 player_1_scorer = act.make_index_is_inside_action(0)
 player_1_goal.insert_action( player_1_scorer )
 player_1_scorer.children.append( particle_reset )
+player_1_scorer.children.append( score_sound )
 
 player_1_goal.insert_action(act.make_draw_rectangle_action()) 
 level_content.append( player_1_goal )
@@ -248,6 +280,7 @@ player_2_goal = act.make_rectangle(((SCREEN_WIDTH-30,0, 30, SCREEN_HEIGHT),(255,
 player_2_scorer = act.make_index_is_inside_action(0)
 player_2_goal.insert_action( player_2_scorer )
 player_2_scorer.children.append( particle_reset )
+player_2_scorer.children.append( score_sound )
 
 player_2_goal.insert_action(act.make_draw_rectangle_action()) 
 level_content.append( player_2_goal )
@@ -258,6 +291,7 @@ player_1_counter = util.make_counter("player_1_counter")
 player_1_increment = util.make_increment_action( 1 )
 player_1_reset = util.make_reset_action(0)
 player_1_trigger = util.make_count_trigger_action(3)
+player_1_trigger.children.append( end_sound )
 player_2_scorer.children.append( player_1_increment )
 player_2_scorer.children.append( player_1_trigger )
 player_1_counter.insert_action( player_1_increment )
@@ -269,6 +303,7 @@ player_2_counter = util.make_counter("player_2_counter")
 player_2_increment = util.make_increment_action( 1 )
 player_2_reset = util.make_reset_action(0)
 player_2_trigger = util.make_count_trigger_action(3)
+player_2_trigger.children.append( end_sound )
 player_1_scorer.children.append( player_2_increment )
 player_1_scorer.children.append( player_2_trigger )
 player_2_counter.insert_action( player_2_increment )
