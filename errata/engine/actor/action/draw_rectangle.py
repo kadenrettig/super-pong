@@ -7,6 +7,7 @@ from pygame.locals import *
 class DrawRectAction():
   def __init__(self):
     self.types = ["display"]
+    self.children = []
     self.entity_state = None
     self.name = "draw_rectangle_action"
     self.verbose = False
@@ -26,8 +27,12 @@ class DrawRectAction():
   def act(self, data):
     if self.condition_to_act(data):
       self.draw(data)
-      if self.verbose:
-        print(self.name + " for " + self.entity_state.name) 
+      # Child actions
+      for a in self.children:
+        a.act(None)
+        
+      # if self.verbose:
+      #   print(self.name + " for " + self.entity_state.name) 
     return 
   
   # render shape

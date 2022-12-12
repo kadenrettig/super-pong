@@ -3,10 +3,10 @@
 
 class Activate():
   def __init__(self):
-    self.types = ["display"]
+    self.types = []
     self.entity_state = None 
     self.name = "activate_action"
-    self.active = False
+    self.active = True
     self.verbose = False
     self.children = []
     return
@@ -36,7 +36,4 @@ class Activate():
         # debugging
         if self.verbose:
           print( self.name + " is activating " + c.name )
-          
-      # disable self until called next
-      self.active = False
       return

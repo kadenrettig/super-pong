@@ -18,12 +18,20 @@ class SpeedIncrease():
     return True
   
   def act(self, data):
-     self.entity_state.velocity[self.particle_index][0] += self.speed_increase[0]
-     self.entity_state.velocity[self.particle_index][1] += self.speed_increase[1]
+    # Add horizontal speed (add if positive, subtract if negative)
+    if self.entity_state.velocity[self.particle_index][0] >= 0:
+      self.entity_state.velocity[self.particle_index][0] += self.speed_increase[0]
+    else:
+      self.entity_state.velocity[self.particle_index][0] -= self.speed_increase[0]
+    # Add vertical speed (add if positive, subtract if negative)
+    if self.entity_state.velocity[self.particle_index][1]:
+      self.entity_state.velocity[self.particle_index][1] += self.speed_increase[1]
+    else:
+      self.entity_state.velocity[self.particle_index][1] -= self.speed_increase[1]
 
-     for c in self.children:
-        c.act( None )
+    for c in self.children:
+      c.act( None )
         
-     if self.verbose:
-        print( f"{self.name} for {self.entity_state.name}" )
-     return 
+    if self.verbose:
+      print( f"{self.name} for {self.entity_state.name}" )
+    return 

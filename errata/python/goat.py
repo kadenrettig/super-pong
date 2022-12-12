@@ -90,13 +90,20 @@ class AddObstacles():
         obs_color = (random.randint(15, 255), random.randint(15, 255), random.randint(15, 255))
         obs_info = ( (obs_location + obs_dimensions), obs_color, "obs_rect" ) 
         obs_rect = act.make_rectangle( obs_info )
-        obs_rect.insert_action( act.make_draw_rectangle_action() )
+        obs_drawer = act.make_draw_rectangle_action()
+        obs_rect.insert_action( obs_drawer )
         
         # create collider for the obstacle
         obs_collider = phys.make_rectangle_collider( (obs_location[0], obs_location[1]), 
                                                      (obs_location[0] + obs_dimensions[0], obs_location[1] + obs_dimensions[1]) )
         obs_collision = phys.make_outside_rectangle_collision()
         obs_collider.insert_action( obs_collision )
+
+        # Ensure colliders only work for active particles
+        obs_collider.active = False
+        obs_activator = util.make_activate_action()
+        obs_collider.insert_action(obs_activator)
+        obs_drawer.children.append(obs_activator)
         
         # append new rect + collider to list
         self.obstacles.append( (obs_rect, obs_collider) )
@@ -109,6 +116,7 @@ game_content = [] # Persistent Game Content
 viewer_actions = [] # Persistent Viewer Actions
 
 level_content = [] # Level specific content
+levels = [] # List of levels
 hud_actions = []
 box_colliders = []
 particles = []
@@ -273,7 +281,7 @@ level_increment = util.make_increment_action( 1 )
 level_counter.insert_action( level_increment )
 
 # Speed Increase
-speed_increase = phys.make_increase_speed_action(0, [2, 0])
+speed_increase = phys.make_increase_speed_action(0, [0.1, 0.1])
 
 ###################################### HUD #####################################
 # hud message generation action
@@ -331,100 +339,102 @@ level_content.append( hud )
                                             
 #################################### PHYSICS ###################################
 # generate physics & particles for each circle
-def get_particles(init_data):
-  # initialize particle entity
-  particles = [] 
-  parts = phys.make_particles()
-  particles.append( parts )
-  
-  # create particles for each given circle
-  for d in init_data:
-    position = list( d.location )
-    velocity = [1.0, 1.0 ]
-    mass = 1.0
-    parts.add_particle( position, velocity, mass )
-  
-  ##### solvers #####
-  # position solve 
-  psolve = phys.make_position_solve_action() 
-  parts.insert_action( psolve )
-  
-  # velocity solve
-  vsolve = phys.make_velocity_solve_action() 
-  parts.insert_action( vsolve ) 
+# initialize particle entity
+particles = [] 
+parts = phys.make_particles()
+particles.append( parts )
 
-  # Add goal checking actions to vsolve
-  vsolve.children.append( player_1_scorer )
-  vsolve.children.append( player_2_scorer )
+# create particles for each given circle
+for d in circs:
+  position = list( d.location )
+  velocity = [1.0, 1.0 ]
+  mass = 1.0
+  parts.add_particle( position, velocity, mass )
 
-  # euler solve
-  esolve = phys.make_euler_solve_action() 
-  esolve.dt = 1.5
-  parts.insert_action( esolve )
-  esolve.children.append( psolve )
-  esolve.children.append( vsolve )
-  esolve.types.append( "loop" )
-  
-  # connect particle positions to circle positions
-  for i in range( 0, len(init_data) ):
-    pick = phys.make_pick_position_action( i )
-    put = act.make_put_position_action()
-    
-    parts.insert_action( pick )
-    init_data[i].insert_action( put )
-    pick.children.append( put )
-    
-    esolve.children.append( pick )
-    
-  ##### collisions with paddles in play area #####
-  # collisions with the window frame
-  window_collider = phys.make_rectangle_collider( [0,0], 
-                                                  [SCREEN_WIDTH, SCREEN_HEIGHT] )
-  collisions = phys.make_inside_rectangle_collision()
-  window_collider.insert_action( collisions )
-  psolve.children.append( collisions )
-  
-  # player paddle 1
-  box_colliders.append( ( ([30, SCREEN_HEIGHT/2], [50, 560]),   # llc, urc
-                          (200,150,150),                        # color
-                          True ) )                              # initial active state
-  
-  # player paddle 2 
-  box_colliders.append( ( ([SCREEN_WIDTH-50, SCREEN_HEIGHT/2], [SCREEN_WIDTH-30, 560]),
-                          (200, 150, 150), 
-                          True ) )
-  
+##### solvers #####
+# position solve 
+psolve = phys.make_position_solve_action() 
+parts.insert_action( psolve )
 
-  # create box colliders
-  for b in box_colliders:
-    box_collider = phys.make_rectangle_collider( b[0][0], b[0][1] )
-    outside_collisions = phys.make_outside_rectangle_collision() 
-    box_collider.insert_action( outside_collisions )
-    psolve.children.append( outside_collisions )
-    box_collider.active = b[2]
-    if box_colliders.index( b ) == 0:
-      move_player_one_paddle.children.append( box_collider )
-    elif box_colliders.index( b ) == 1:
-      move_player_two_paddle.children.append( box_collider )
-      
-  # create obstacles
-  add_obstacles_action = AddObstacles()
-  obstacles = add_obstacles_action.act( 4 )
-  for obstacle in obstacles:
-    psolve.children.append( obstacle[1].actions[0] )
-    level_content.append( obstacle[0] )
-    level_content.append( obstacle[1] )
-  
-  return particles
+# velocity solve
+vsolve = phys.make_velocity_solve_action() 
+parts.insert_action( vsolve ) 
 
-# create every particle for simulation
-particles = get_particles( circs )
+# Add goal checking actions to vsolve
+vsolve.children.append( player_1_scorer )
+vsolve.children.append( player_2_scorer )
+
+# euler solve
+esolve = phys.make_euler_solve_action() 
+esolve.dt = 1.5
+parts.insert_action( esolve )
+esolve.children.append( psolve )
+esolve.children.append( vsolve )
+esolve.types.append( "loop" )
+
+# connect particle positions to circle positions
+for i in range( 0, len(circs) ):
+  pick = phys.make_pick_position_action( i )
+  put = act.make_put_position_action()
+  
+  parts.insert_action( pick )
+  circs[i].insert_action( put )
+  pick.children.append( put )
+  
+  esolve.children.append( pick )
+  
+##### collisions with paddles in play area #####
+# collisions with the window frame
+window_collider = phys.make_rectangle_collider( [0,0], 
+                                                [SCREEN_WIDTH, SCREEN_HEIGHT] )
+collisions = phys.make_inside_rectangle_collision()
+window_collider.insert_action( collisions )
+psolve.children.append( collisions )
+
+# player paddle 1
+box_colliders.append( ( ([30, SCREEN_HEIGHT/2], [50, 560]),   # llc, urc
+                        (200,150,150),                        # color
+                        True ) )                              # initial active state
+
+# player paddle 2 
+box_colliders.append( ( ([SCREEN_WIDTH-50, SCREEN_HEIGHT/2], [SCREEN_WIDTH-30, 560]),
+                        (200, 150, 150), 
+                        True ) )
+
+
+# create box colliders
+for b in box_colliders:
+  box_collider = phys.make_rectangle_collider( b[0][0], b[0][1] )
+  outside_collisions = phys.make_outside_rectangle_collision() 
+  box_collider.insert_action( outside_collisions )
+  psolve.children.append( outside_collisions )
+  box_collider.active = b[2]
+  if box_colliders.index( b ) == 0:
+    move_player_one_paddle.children.append( box_collider )
+  elif box_colliders.index( b ) == 1:
+    move_player_two_paddle.children.append( box_collider )
 
 # Add reset to particles
 particles[0].insert_action( particle_reset )
 
 # Add speed increase to particles
 particles[0].insert_action( speed_increase )
+
+level_content = level_content + circs + particles
+
+### Generate levels
+# create obstacles
+add_obstacles_action = AddObstacles()
+for i in range(0,23):
+    current_level = []
+    for content in level_content:
+      current_level.append(content)
+    obstacles = add_obstacles_action.act( 2 )
+    for obstacle in obstacles:
+      psolve.children.append( obstacle[1].actions[0] )
+      current_level.append( obstacle[0] )
+      current_level.append( obstacle[1] )
+    levels.append(current_level)
 
 ################################ APPEND CONTENT ################################
 # add actions to viewer
@@ -434,7 +444,47 @@ for action in viewer_actions:
   
 # append all game content
 print( f"Loading game content..." )
-level_content = level_content + circs + particles 
+level_content = level_content
+
+
+################################# CREDIT PAGE ##################################
+credit_hud = ui.make_hud()
+created_by = act.make_text( (35, 
+                           (500, 295), 
+                           (255, 255, 255), 
+                           "CREATED BY:", 
+                           "created_by_message") )
+created_by.insert_action( act.make_draw_text_action() )
+credit_hud.children.append( created_by )
+
+kaden_rettig = act.make_text( (35, 
+                           (500, 350), 
+                           (255, 255, 255), 
+                           "KADEN RETTIG", 
+                           "kaden_message") )
+kaden_rettig.insert_action( act.make_draw_text_action() )
+credit_hud.children.append( kaden_rettig )
+
+adam_copeland = act.make_text( (35, 
+                           (500, 395), 
+                           (255, 255, 255), 
+                           "ADAM COPELAND", 
+                           "adam_message") )
+adam_copeland.insert_action( act.make_draw_text_action() )
+credit_hud.children.append( adam_copeland )
+
+stephen_sams = act.make_text( (35, 
+                           (500, 440), 
+                           (255, 255, 255), 
+                           "STEPHEN SAMS", 
+                           "stephen_message") )
+stephen_sams.insert_action( act.make_draw_text_action() )
+credit_hud.children.append( stephen_sams )
+credit_hud.insert_action( ui.make_draw_hud_action() )
+
+credit_screen = []
+credit_screen.append(credit_hud)
+levels.append(credit_screen)
 
 
 ################################# GAME LOOPER ##################################
@@ -453,44 +503,52 @@ start_button.insert_action(start_deactivate)
 start_button.insert_action(start_activate)
 
 start_press.children.append(start_deactivate)
-start_press.children.append(level_increment)  #doesn't increment properly
 
 looper.insert_entity(start_button)
 display.insert_entity(start_button)
 
-# End button
-end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
-end_button.insert_action(ui.make_draw_rect_button_action())
-end_button.active = False
-end_deactivate = util.make_deactivate_action()
-end_activate = util.make_activate_action()
-end_press = ui.make_button_press_action()
-end_button.insert_action(end_press)
+# DEBUG: End button
+# end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
+# end_button.active = False
+# end_deactivate = util.make_deactivate_action()
+# end_activate = util.make_activate_action()
 
-end_button.insert_action(end_activate)
-end_button.insert_action(end_deactivate)
+# end_button.insert_action(ui.make_draw_rect_button_action())
+# end_press = ui.make_button_press_action()
+# end_button.insert_action(end_press)
 
-start_press.children.append(end_activate)
-end_press.children.append(start_activate)
-end_press.children.append(end_deactivate)
+# end_button.insert_action(end_activate)
+# end_button.insert_action(end_deactivate)
 
-looper.insert_entity(end_button)
-display.insert_entity(end_button)
+# start_press.children.append(end_activate)
+# end_press.children.append(start_activate)
+# end_press.children.append(end_deactivate)
+
+# looper.insert_entity(end_button)
+# display.insert_entity(end_button)
 
 # Levels
-test_level = pl.make_level(looper, display, level_content, "test_level")
-loader = pl.make_load_level_action()
-test_level.insert_action(loader)
-start_press.children.append(loader)
+
+levels.append(level_content)
+level_manager = pl.make_level_manager(looper, display, levels, "level_manager")
+level_loader = pl.make_load_level_action()
+level_manager.insert_action(level_loader)
+start_press.children.append(level_loader)
 
 closer = pl.make_close_level_action()
-test_level.insert_action(closer)
+level_manager.insert_action(closer)
 
 
-end_press.children.append(closer)
-end_press.children.append(particle_reset)
-end_press.children.append(player_1_reset)
-end_press.children.append(player_2_reset)
-end_press.children.append(speed_increase)
+# end_press.children.append(closer)
+player_1_trigger.children.append(closer)
+player_2_trigger.children.append(closer)
+
+# Other actions to trigger on close
+closer.children.append(particle_reset)
+closer.children.append(player_1_reset)
+closer.children.append(player_2_reset)
+closer.children.append(speed_increase)
+closer.children.append(level_loader)
+level_loader.children.append(level_increment)
 
 looper.loop()

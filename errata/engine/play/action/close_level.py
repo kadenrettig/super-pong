@@ -3,13 +3,17 @@
 
 class CloseLevel():
   def __init__(self):
-    self.types = ["event"]
+    self.types = []
+    self.children = []
     self.entity_state = None
-    self.name = "detect_quit_action"
+    self.name = "close_level_action"
     self.verbose = False
     return 
   
-  def act(self, event):
-    print("loading level...")
+  def act(self, data):
+    print("closing level...")
     self.entity_state.close_level()
+    # Run children
+    for a in self.children:
+      a.act(None)
     return

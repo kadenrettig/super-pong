@@ -17,6 +17,10 @@ def make_level(gameloop, display, content, name):
   import errata.engine.play.entity.level as lvl
   return lvl.Level(gameloop, display, content, name)
 
+def make_level_manager(gameloop, display, levels, name):
+  import errata.engine.play.entity.level_manager as lm
+  return lm.LevelManager(gameloop, display, levels, name)
+
 ##### ACTIONS #####
 
 # action to close the viewer

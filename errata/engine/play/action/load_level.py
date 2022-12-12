@@ -3,13 +3,24 @@
 
 class LoadLevel():
   def __init__(self):
-    self.types = ["event"]
+    self.types = []
+    self.children = []
     self.entity_state = None
-    self.name = "detect_quit_action"
+    self.name = "load_level_action"
     self.verbose = False
     return 
+
+  def condition_to_act(self, event):
+    if self.entity_state == None:
+      return False
+    if self.entity_state.active == False:
+      return False
+    return True
   
   def act(self, event):
-    print("loading level...")
-    self.entity_state.load_level()
+    if self.condition_to_act:
+      print("loading level... ?")
+      self.entity_state.load_level()
+      for a in self.children:
+        a.act(None)
     return
