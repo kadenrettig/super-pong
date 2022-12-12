@@ -69,3 +69,7 @@ def make_activate_action():
 def make_deactivate_action():
   import errata.engine.physics.action.deactivate as act 
   return act.Deactivate()
+
+def make_increase_speed_action( index, speed):
+  import errata.engine.physics.action.speed_increase as si
+  return si.SpeedIncrease( index, speed)

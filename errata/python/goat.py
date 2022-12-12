@@ -86,7 +86,7 @@ class AddObstacles():
         # create new obstacle
         # obs_dimensions = (random.randint(25,50), random.randint(25, 50))
         obs_dimensions = (45, 45)
-        obs_location = (random.randint(50, SCREEN_WIDTH - obs_dimensions[0]), random.randint(51, SCREEN_HEIGHT - obs_dimensions[1])) 
+        obs_location = (random.randint(50, SCREEN_WIDTH - obs_dimensions[0] - 50), random.randint(51, SCREEN_HEIGHT - obs_dimensions[1])) 
         obs_color = (random.randint(15, 255), random.randint(15, 255), random.randint(15, 255))
         obs_info = ( (obs_location + obs_dimensions), obs_color, "obs_rect" ) 
         obs_rect = act.make_rectangle( obs_info )
@@ -99,10 +99,8 @@ class AddObstacles():
         obs_collider.insert_action( obs_collision )
         
         # append new rect + collider to list
-        print("hello")
         self.obstacles.append( (obs_rect, obs_collider) )
       
-    print(self.obstacles)
     return self.obstacles
 
 
@@ -190,7 +188,7 @@ level_content.append( player_two_paddle )
 
 ########################## POINTS AND GAMEPLAY THINGS ##########################
 ###### game net ######
-net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 0, 10, 110), 
+net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 60, 10, 50), 
                                  (50, 100, 83),
                                  "net_part_1_rectangle"))
 net_part_1.insert_action(act.make_draw_rectangle_action()) 
@@ -274,6 +272,9 @@ level_counter = util.make_counter("level_counter")
 level_increment = util.make_increment_action( 1 )
 level_counter.insert_action( level_increment )
 
+# Speed Increase
+speed_increase = phys.make_increase_speed_action(0, [2, 0])
+
 ###################################### HUD #####################################
 # hud message generation action
 generate_message = GenerateMessage()
@@ -339,7 +340,7 @@ def get_particles(init_data):
   # create particles for each given circle
   for d in init_data:
     position = list( d.location )
-    velocity = [ (2.0 * random.random() - 2.0), (2.0 * random.random() - 1.0) ]
+    velocity = [1.0, 1.0 ]
     mass = 1.0
     parts.add_particle( position, velocity, mass )
   
@@ -413,10 +414,6 @@ def get_particles(init_data):
     psolve.children.append( obstacle[1].actions[0] )
     level_content.append( obstacle[0] )
     level_content.append( obstacle[1] )
-    
-  print(obstacles)
-  for i in psolve.children:
-    print(i.name)
   
   return particles
 
@@ -426,6 +423,9 @@ particles = get_particles( circs )
 # Add reset to particles
 particles[0].insert_action( particle_reset )
 
+# Add speed increase to particles
+particles[0].insert_action( speed_increase )
+
 ################################ APPEND CONTENT ################################
 # add actions to viewer
 for action in viewer_actions:
@@ -434,7 +434,8 @@ for action in viewer_actions:
   
 # append all game content
 print( f"Loading game content..." )
-level_content = level_content + circs + particles
+level_content = level_content + circs + particles 
+
 
 ################################# GAME LOOPER ##################################
 # make the game loop & loop
@@ -452,7 +453,7 @@ start_button.insert_action(start_deactivate)
 start_button.insert_action(start_activate)
 
 start_press.children.append(start_deactivate)
-start_press.children.append(level_increment)
+start_press.children.append(level_increment)  #doesn't increment properly
 
 looper.insert_entity(start_button)
 display.insert_entity(start_button)
@@ -490,6 +491,6 @@ end_press.children.append(closer)
 end_press.children.append(particle_reset)
 end_press.children.append(player_1_reset)
 end_press.children.append(player_2_reset)
-
+end_press.children.append(speed_increase)
 
 looper.loop()
