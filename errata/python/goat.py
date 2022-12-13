@@ -8,9 +8,11 @@ import random
 import pygame
 from pygame.locals import *
 
+import errata.assets.textures as texture
 import errata.engine.utility as util
 import errata.engine.physics as phys
 import errata.assets.sounds as sound
+import errata.engine.asset as asset
 import errata.engine.actor as act 
 import errata.engine.sound as sfx
 import errata.engine.play as pl 
@@ -225,6 +227,7 @@ player_two_controller.children.append( move_player_two_paddle )
 level_content.append( player_one_paddle )
 level_content.append( player_two_paddle )
 
+
 ########################## POINTS AND GAMEPLAY THINGS ##########################
 ###### game net ######
 net_part_1 = act.make_rectangle((((SCREEN_WIDTH/2) - 10, 60, 10, 50), 
@@ -317,6 +320,7 @@ level_counter.insert_action( level_increment )
 
 # Speed Increase
 speed_increase = phys.make_increase_speed_action(0, [0.1, 0.1])
+
 
 ###################################### HUD #####################################
 # hud message generation action
@@ -471,6 +475,7 @@ for i in range(0,23):
       current_level.append( obstacle[1] )
     levels.append(current_level)
 
+
 ################################ APPEND CONTENT ################################
 # add actions to viewer
 for action in viewer_actions:
@@ -527,7 +532,7 @@ levels.append(credit_screen)
 looper = pl.make_game_looper( game_content )
 
 # Start button
-start_button = ui.make_button( ((415, 550, 400, 150), (50,100,83), "start_button"))
+start_button = ui.make_button( ((425, 550, 400, 150), (50,100,83), "start_button"))
 start_button.insert_action(ui.make_draw_rect_button_action())
 start_button.border = True
 start_button.border_thickness = 10
@@ -541,46 +546,44 @@ start_button.insert_action(start_activate)
 
 start_press.children.append(start_deactivate)
 
+
 ############################# START SCREEN TEXT ################################
 start_screen_hud = ui.make_hud()
 
-game_title = act.make_text( (75, 
-                           (340, 25), 
-                           (255, 255, 255), 
-                           "SUPER   PONG", 
-                           "game_title_message") )                
-game_title.insert_action( act.make_draw_text_action() )
+game_logo = asset.make_image( (135, 50), (1000, 300), "superpong-logo.png", 
+                              "super_pong_logo" )
+game_logo.insert_action( asset.make_draw_image_action() )
 
-game_info_1 = act.make_text( (35, 
-                           (135, 240), 
+game_info_1 = act.make_text( (25, 
+                           (300, 340), 
                            (255, 255, 255), 
-                           "To progress to the next level be the first to score 3 points", 
+                           "To progress to the next level, be the first to score 3 points!", 
                            "game_info_1_message") )                
 game_info_1.insert_action( act.make_draw_text_action() )
 
-game_info_2 = act.make_text( (35, 
-                           (135, 285), 
+game_info_2 = act.make_text( (25, 
+                           (285, 385), 
                            (255, 255, 255), 
-                           "Though the higher level, the higher the ball's speed and", 
+                           "Beware: the higher the level, the higher the ball's speed and", 
                            "game_info_2_message") )                
 game_info_2.insert_action( act.make_draw_text_action() )
 
-game_info_3 = act.make_text( (35, 
-                           (140, 330), 
+game_info_3 = act.make_text( (25, 
+                           (340, 430), 
                            (255, 255, 255), 
                            "the more obstacles that spawn to block its path", 
                            "game_info_3_message") )                
 game_info_3.insert_action( act.make_draw_text_action() )
 
 press_start = act.make_text( (35, 
-                           (490, 615), 
+                           (505, 607), 
                            (255, 255, 255), 
                            "PRESS START", 
                            "press_start_message") )                
 press_start.insert_action( act.make_draw_text_action() )
 
 #appending the necessary info to display to the hud
-start_screen_hud.children.append( game_title )
+start_screen_hud.children.append( game_logo )
 start_screen_hud.children.append( game_info_1 )
 start_screen_hud.children.append( game_info_2 )
 start_screen_hud.children.append( game_info_3 )
