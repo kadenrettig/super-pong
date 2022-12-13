@@ -527,8 +527,10 @@ levels.append(credit_screen)
 looper = pl.make_game_looper( game_content )
 
 # Start button
-start_button = ui.make_button( ((305, 110, 200, 200), (0,255,0), "start_button"))
+start_button = ui.make_button( ((415, 550, 400, 150), (50,100,83), "start_button"))
 start_button.insert_action(ui.make_draw_rect_button_action())
+start_button.border = True
+start_button.border_thickness = 10
 start_press = ui.make_button_press_action()
 start_deactivate = util.make_deactivate_action()
 start_activate = util.make_activate_action()
@@ -539,9 +541,66 @@ start_button.insert_action(start_activate)
 
 start_press.children.append(start_deactivate)
 
-looper.insert_entity(start_button)
-display.insert_entity(start_button)
+############################# START SCREEN TEXT ################################
+start_screen_hud = ui.make_hud()
 
+game_title = act.make_text( (75, 
+                           (340, 25), 
+                           (255, 255, 255), 
+                           "SUPER   PONG", 
+                           "game_title_message") )                
+game_title.insert_action( act.make_draw_text_action() )
+
+game_info_1 = act.make_text( (35, 
+                           (135, 240), 
+                           (255, 255, 255), 
+                           "To progress to the next level be the first to score 3 points", 
+                           "game_info_1_message") )                
+game_info_1.insert_action( act.make_draw_text_action() )
+
+game_info_2 = act.make_text( (35, 
+                           (135, 285), 
+                           (255, 255, 255), 
+                           "Though the higher level, the higher the ball's speed and", 
+                           "game_info_2_message") )                
+game_info_2.insert_action( act.make_draw_text_action() )
+
+game_info_3 = act.make_text( (35, 
+                           (140, 330), 
+                           (255, 255, 255), 
+                           "the more obstacles that spawn to block its path", 
+                           "game_info_3_message") )                
+game_info_3.insert_action( act.make_draw_text_action() )
+
+press_start = act.make_text( (35, 
+                           (490, 615), 
+                           (255, 255, 255), 
+                           "PRESS START", 
+                           "press_start_message") )                
+press_start.insert_action( act.make_draw_text_action() )
+
+#appending the necessary info to display to the hud
+start_screen_hud.children.append( game_title )
+start_screen_hud.children.append( game_info_1 )
+start_screen_hud.children.append( game_info_2 )
+start_screen_hud.children.append( game_info_3 )
+start_screen_hud.children.append( press_start )
+
+#inserting the start_screen_hud's actions
+start_screen_hud.insert_action( ui.make_draw_hud_action())
+start_hud_deactivate = util.make_deactivate_action()
+start_hud_activate = util.make_activate_action()
+start_screen_hud.insert_action(start_hud_deactivate)
+start_screen_hud.insert_action(start_hud_activate)
+
+#adds the start screen hud's deactivate to start_press so that,
+#the text on the start screen goes away whent the levels start
+start_press.children.append(start_hud_deactivate)
+
+looper.insert_entity(start_button)
+looper.insert_entity(start_screen_hud)
+display.insert_entity(start_button)
+display.insert_entity(start_screen_hud)
 # DEBUG: End button
 # end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
 # end_button.active = False
