@@ -111,8 +111,8 @@ class AddObstacles():
         # Ensure colliders only work for active particles
         obs_collider.active = False
         obs_activator = util.make_activate_action()
-        obs_collider.insert_action(obs_activator)
-        obs_drawer.children.append(obs_activator)
+        obs_collider.insert_action( obs_activator )
+        obs_drawer.children.append( obs_activator )
         
         # append new rect + collider to list
         self.obstacles.append( (obs_rect, obs_collider) )
@@ -167,7 +167,6 @@ score_sound = sfx.make_sound_action( sound_path +
 end_sound = sfx.make_sound_action( sound_path + 
                                    "mixkit-arcade-retro-game-over-213.wav" )
 
-
 #################################### CIRCLES ###################################
 # create a list of circles to be used as particles
 def get_circles(nx, ny, nb):
@@ -189,11 +188,10 @@ def get_circles(nx, ny, nb):
 
 circs = get_circles( SCREEN_WIDTH, SCREEN_HEIGHT, 1 )
 
-
 ################################## PLAYERS #####################################
 ##### player 1 #####
 # player 1 paddle
-player_one_paddle = act.make_rectangle( ( (30, SCREEN_HEIGHT/2, 20, 200), 
+player_one_paddle = act.make_rectangle( ( (30, SCREEN_HEIGHT/2, 25, 165), 
                                           (50, 100, 83), 
                                           "player_one_paddle_rect") )
 player_one_paddle.insert_action( act.make_draw_rectangle_action() )
@@ -209,7 +207,7 @@ player_one_controller.children.append( move_player_one_paddle )
 
 ##### player 2 #####
 # player 2 paddle
-player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-50, SCREEN_HEIGHT/2, 20, 200),
+player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-50, SCREEN_HEIGHT/2, 25, 165),
                                           (50, 100, 83), 
                                           "player_two_paddle_rect") )
 player_two_paddle.insert_action( act.make_draw_rectangle_action() )
@@ -226,7 +224,6 @@ player_two_controller.children.append( move_player_two_paddle )
 ##### prepare to instantiate #####
 level_content.append( player_one_paddle )
 level_content.append( player_two_paddle )
-
 
 ########################## POINTS AND GAMEPLAY THINGS ##########################
 ###### game net ######
@@ -292,20 +289,20 @@ level_content.append( player_2_goal )
 # player 1 counter
 player_1_counter = util.make_counter("player_1_counter")
 player_1_increment = util.make_increment_action( 1 )
-player_1_reset = util.make_reset_action(0)
-player_1_trigger = util.make_count_trigger_action(3)
+player_1_reset = util.make_reset_action( 0 )
+player_1_trigger = util.make_count_trigger_action( 3 )
 player_1_trigger.children.append( end_sound )
 player_2_scorer.children.append( player_1_increment )
 player_2_scorer.children.append( player_1_trigger )
 player_1_counter.insert_action( player_1_increment )
-player_1_counter.insert_action( player_1_reset)
+player_1_counter.insert_action( player_1_reset )
 player_1_counter.insert_action( player_1_trigger)
 
 # player 2 counter 
 player_2_counter = util.make_counter("player_2_counter")
 player_2_increment = util.make_increment_action( 1 )
-player_2_reset = util.make_reset_action(0)
-player_2_trigger = util.make_count_trigger_action(3)
+player_2_reset = util.make_reset_action( 0 )
+player_2_trigger = util.make_count_trigger_action( 3 )
 player_2_trigger.children.append( end_sound )
 player_1_scorer.children.append( player_2_increment )
 player_1_scorer.children.append( player_2_trigger )
@@ -320,7 +317,6 @@ level_counter.insert_action( level_increment )
 
 # Speed Increase
 speed_increase = phys.make_increase_speed_action(0, [0.1, 0.1])
-
 
 ###################################### HUD #####################################
 # hud message generation action
@@ -350,10 +346,10 @@ hud.children.append( hud_player_2 )
 
 # hud counter for the current level
 hud_level = act.make_text( (50, 
-                              (550, 15), 
-                              (255, 255, 255), 
-                              "Level 0", 
-                              "level_hud"))
+                           (550, 15), 
+                           (255, 255, 255), 
+                            "Level 0", 
+                            "level_hud"))
 hud_level.insert_action( act.make_draw_text_action() )
 hud.children.append ( hud_level )
 
@@ -374,8 +370,7 @@ for action in hud_actions:
 
 # add complete hud to game content
 level_content.append( hud )
-
-                                            
+                                          
 #################################### PHYSICS ###################################
 # generate physics & particles for each circle
 # initialize particle entity
@@ -386,7 +381,7 @@ particles.append( parts )
 # create particles for each given circle
 for d in circs:
   position = list( d.location )
-  velocity = [1.0, 1.0 ]
+  velocity = [1.0, 1.0]
   mass = 1.0
   parts.add_particle( position, velocity, mass )
 
@@ -431,15 +426,14 @@ window_collider.insert_action( collisions )
 psolve.children.append( collisions )
 
 # player paddle 1
-box_colliders.append( ( ([30, SCREEN_HEIGHT/2], [50, 560]),   # llc, urc
+box_colliders.append( ( ([30, SCREEN_HEIGHT/2], [55, 525]),   # llc, urc
                         (200,150,150),                        # color
                         True ) )                              # initial active state
 
 # player paddle 2 
-box_colliders.append( ( ([SCREEN_WIDTH-50, SCREEN_HEIGHT/2], [SCREEN_WIDTH-30, 560]),
+box_colliders.append( ( ([SCREEN_WIDTH-55, SCREEN_HEIGHT/2], [SCREEN_WIDTH-35, 525]),
                         (200, 150, 150), 
                         True ) )
-
 
 # create box colliders
 for b in box_colliders:
@@ -467,14 +461,13 @@ add_obstacles_action = AddObstacles()
 for i in range(0,23):
     current_level = []
     for content in level_content:
-      current_level.append(content)
+      current_level.append( content )
     obstacles = add_obstacles_action.act( 2 )
     for obstacle in obstacles:
       psolve.children.append( obstacle[1].actions[0] )
       current_level.append( obstacle[0] )
       current_level.append( obstacle[1] )
-    levels.append(current_level)
-
+    levels.append( current_level )
 
 ################################ APPEND CONTENT ################################
 # add actions to viewer
@@ -485,7 +478,6 @@ for action in viewer_actions:
 # append all game content
 print( f"Loading game content..." )
 level_content = level_content
-
 
 ################################# CREDIT PAGE ##################################
 credit_hud = ui.make_hud()
@@ -523,9 +515,8 @@ credit_hud.children.append( stephen_sams )
 credit_hud.insert_action( ui.make_draw_hud_action() )
 
 credit_screen = []
-credit_screen.append(credit_hud)
-levels.append(credit_screen)
-
+credit_screen.append( credit_hud )
+levels.append( credit_screen )
 
 ################################# GAME LOOPER ##################################
 # make the game loop & loop
@@ -539,13 +530,12 @@ start_button.border_thickness = 10
 start_press = ui.make_button_press_action()
 start_deactivate = util.make_deactivate_action()
 start_activate = util.make_activate_action()
-start_button.insert_action(start_press)
+start_button.insert_action( start_press )
 
-start_button.insert_action(start_deactivate)
-start_button.insert_action(start_activate)
+start_button.insert_action( start_deactivate )
+start_button.insert_action( start_activate )
 
-start_press.children.append(start_deactivate)
-
+start_press.children.append( start_deactivate )
 
 ############################# START SCREEN TEXT ################################
 start_screen_hud = ui.make_hud()
@@ -593,17 +583,17 @@ start_screen_hud.children.append( press_start )
 start_screen_hud.insert_action( ui.make_draw_hud_action())
 start_hud_deactivate = util.make_deactivate_action()
 start_hud_activate = util.make_activate_action()
-start_screen_hud.insert_action(start_hud_deactivate)
-start_screen_hud.insert_action(start_hud_activate)
+start_screen_hud.insert_action( start_hud_deactivate )
+start_screen_hud.insert_action( start_hud_activate )
 
 #adds the start screen hud's deactivate to start_press so that,
 #the text on the start screen goes away whent the levels start
-start_press.children.append(start_hud_deactivate)
+start_press.children.append( start_hud_deactivate )
 
-looper.insert_entity(start_button)
-looper.insert_entity(start_screen_hud)
-display.insert_entity(start_button)
-display.insert_entity(start_screen_hud)
+looper.insert_entity( start_button )
+looper.insert_entity( start_screen_hud )
+display.insert_entity( start_button )
+display.insert_entity( start_screen_hud )
 # DEBUG: End button
 # end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
 # end_button.active = False
@@ -625,27 +615,25 @@ display.insert_entity(start_screen_hud)
 # display.insert_entity(end_button)
 
 # Levels
-
-levels.append(level_content)
-level_manager = pl.make_level_manager(looper, display, levels, "level_manager")
+levels.append( level_content )
+level_manager = pl.make_level_manager( looper, display, levels, "level_manager" )
 level_loader = pl.make_load_level_action()
-level_manager.insert_action(level_loader)
-start_press.children.append(level_loader)
+level_manager.insert_action( level_loader )
+start_press.children.append( level_loader )
 
 closer = pl.make_close_level_action()
-level_manager.insert_action(closer)
-
+level_manager.insert_action( closer )
 
 # end_press.children.append(closer)
-player_1_trigger.children.append(closer)
-player_2_trigger.children.append(closer)
+player_1_trigger.children.append( closer )
+player_2_trigger.children.append( closer )
 
 # Other actions to trigger on close
-closer.children.append(particle_reset)
-closer.children.append(player_1_reset)
-closer.children.append(player_2_reset)
-closer.children.append(speed_increase)
-closer.children.append(level_loader)
-level_loader.children.append(level_increment)
+closer.children.append( particle_reset )
+closer.children.append( player_1_reset )
+closer.children.append( player_2_reset )
+closer.children.append( speed_increase )
+closer.children.append( level_loader )
+level_loader.children.append( level_increment )
 
 looper.loop()
