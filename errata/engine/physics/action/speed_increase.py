@@ -1,3 +1,4 @@
+#STEPHEN SAMS, CPSC 4160, FALL 2022
 #Action is designed to increase the velocity of the particle
 
 class SpeedIncrease():

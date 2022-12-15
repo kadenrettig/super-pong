@@ -1,4 +1,4 @@
-# KADEN RETTIG, CPSC 4160, FALL 2022
+# KADEN RETTIG, STEPHEN SAMS (added move()), CPSC 4160, FALL 2022
 # create a rectangle
 
 import pygame

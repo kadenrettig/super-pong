@@ -207,7 +207,7 @@ player_one_controller.children.append( move_player_one_paddle )
 
 ##### player 2 #####
 # player 2 paddle
-player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-50, SCREEN_HEIGHT/2, 25, 165),
+player_two_paddle = act.make_rectangle( ( (SCREEN_WIDTH-55, SCREEN_HEIGHT/2, 25, 165),
                                           (50, 100, 83), 
                                           "player_two_paddle_rect") )
 player_two_paddle.insert_action( act.make_draw_rectangle_action() )
@@ -594,25 +594,6 @@ looper.insert_entity( start_button )
 looper.insert_entity( start_screen_hud )
 display.insert_entity( start_button )
 display.insert_entity( start_screen_hud )
-# DEBUG: End button
-# end_button = ui.make_button( ((805, 110, 200, 200), (255,0,0), "end_button"))
-# end_button.active = False
-# end_deactivate = util.make_deactivate_action()
-# end_activate = util.make_activate_action()
-
-# end_button.insert_action(ui.make_draw_rect_button_action())
-# end_press = ui.make_button_press_action()
-# end_button.insert_action(end_press)
-
-# end_button.insert_action(end_activate)
-# end_button.insert_action(end_deactivate)
-
-# start_press.children.append(end_activate)
-# end_press.children.append(start_activate)
-# end_press.children.append(end_deactivate)
-
-# looper.insert_entity(end_button)
-# display.insert_entity(end_button)
 
 # Levels
 levels.append( level_content )

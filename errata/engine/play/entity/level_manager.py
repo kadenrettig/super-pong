@@ -21,28 +21,21 @@ class LevelManager():
     def load_level(self):
         if (self.counter < len(self.levels)):
             print(f"LOADING level {self.counter}")
-            
+        
             for e in self.levels[self.counter]:
                 self.game_loop.insert_entity(e)
                 self.display.insert_entity(e)
         return
         
-        
-
     def close_level(self):
-        print("CLOSING")
         for le in self.levels[self.counter]:
             for a in le.actions:
                 self.game_loop.remove_action(a)
                 self.display.remove_action(a)
-        # Check levels
-        print("length of levels: "+str(len(self.levels)))
+                
         # Update to the next level
         if (self.counter < len(self.levels)):
             self.counter += 1
             print(f"Counter up to {self.counter}")
         else:
             print("Out of levels!")
-        
-                
-        

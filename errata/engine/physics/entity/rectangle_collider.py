@@ -1,4 +1,4 @@
-# KADEN RETTIG, CPSC 4160, FALL 2022
+# KADEN RETTIG, STEPHEN SAMS (added move()), CPSC 4160, FALL 2022
 # rectangular collider entity for collision simulation
 
 class RectangleCollider():
