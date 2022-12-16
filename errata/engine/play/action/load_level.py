@@ -21,6 +21,7 @@ class LoadLevel():
     if self.condition_to_act:
       
       # load the level
+      # calls the Level Manager's load method
       self.entity_state.load_level()
       
       # call children

@@ -32,6 +32,7 @@ class IndexIsInside():
         c.act( None )
     return
   
+  # checks if the position is inside the dimensions
   def inside(self, index, data):
     if data.position[index][0] < self.entity_state.dimensions[0]:
       return False 

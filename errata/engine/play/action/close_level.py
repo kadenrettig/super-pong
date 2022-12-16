@@ -1,5 +1,5 @@
 # ADAM COPELAND, CPSC 4160, FALL 2022
-# Level load action
+# Level close action
 
 class CloseLevel():
   def __init__(self):
@@ -13,7 +13,8 @@ class CloseLevel():
   def act(self, data):
     print("closing level...")
     
-    # close the level
+    # close the level, 
+    # calls the Level Manager's close method
     self.entity_state.close_level()
     
     # Run children

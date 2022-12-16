@@ -1,5 +1,5 @@
-#STEPHEN SAMS, CPSC 4160, FALL 2022
-#Action is designed to increase the velocity of the particle
+# STEPHEN SAMS, ADAM COPELAND, CPSC 4160, FALL 2022
+# Action is designed to increase the velocity of the particle
 
 class SpeedIncrease():
   def __init__(self, index, speed):
@@ -19,11 +19,13 @@ class SpeedIncrease():
     return True
   
   def act(self, data):
+    
     # Add horizontal speed (add if positive, subtract if negative)
     if self.entity_state.velocity[self.particle_index][0] >= 0:
       self.entity_state.velocity[self.particle_index][0] += self.speed_increase[0]
     else:
       self.entity_state.velocity[self.particle_index][0] -= self.speed_increase[0]
+      
     # Add vertical speed (add if positive, subtract if negative)
     if self.entity_state.velocity[self.particle_index][1]:
       self.entity_state.velocity[self.particle_index][1] += self.speed_increase[1]

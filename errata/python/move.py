@@ -26,18 +26,6 @@ class Move():
   def act(self, data):
     if self.condition_to_act(data):
       
-      # # activate/deactivate button
-      # if self.entity_state.active:
-      #   for a in self.entity_state.actions:
-      #     if a.name == "deactivate_action":
-      #       a.active = True
-      #       a.act(data)
-      # else:
-      #   for a in self.entity_state.actions:
-      #     if a.name == "activate_action":
-      #       a.active = True
-      #       a.act(data)
-      
       # move the button
       self.move_button(self.entity_state)
       

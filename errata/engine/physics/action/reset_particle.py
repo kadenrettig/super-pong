@@ -1,4 +1,5 @@
-# CPSC 4160, FALL 2022
+# ADAM COPELAND, CPSC 4160, FALL 2022
+# Action that resets the position of a particle
 
 # passes the center position from the entity to the child actions
 class ResetParticle():
@@ -24,6 +25,8 @@ class ResetParticle():
   
   def act(self, data):
     if self.condition_to_act( data ):
+
+      # sets the particles current position to that of the passed in "spawn" location
       self.entity_state.position[self.particle_index][0] = self.start_location[0]
       self.entity_state.position[self.particle_index][1] = self.start_location[1]
       self.entity_state.velocity[self.particle_index][0] = - self.entity_state.velocity[self.particle_index][0]

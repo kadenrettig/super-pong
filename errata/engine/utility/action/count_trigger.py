@@ -16,17 +16,20 @@ class CountTrigger():
       return False
     if self.entity_state.active == False:
       return False 
+
+    #checks to make sure the current score  has reached 
+    #the given value before acting
     if self.entity_state.counter == self.value:
       return True
     return False
   
   def act(self, data):
     if self.condition_to_act(data):
-      # Run child actions
+
+      #"Triggers" child actions to act
       for c in self.children:
           c.act( data )
       
-      # debugging
       if self.verbose:
         print( f"counter for {self.entity_state.name} reached {self.value}." )
       return
