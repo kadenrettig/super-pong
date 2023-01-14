@@ -1,6 +1,7 @@
 <!-- Created by Kaden Rettig -->
 
-# Super Pong
+<p class="center">
+  <img src = 'https://github.com/kadenrettig/Super-Pong/blob/main/errata/assets/textures/superpong-logo.png' alt='Logo'/> </br>
 The goal of this project is to simulate a "Game Engine Jam", in which teams of up to 3 create & present a game engine built around a given theme, complete with a game to show off the functionality & flexibility of the engine. The theme for this given engine is "contemplation", and requires implementing a level system & difficulty layering. 
 
 ## Showcase
